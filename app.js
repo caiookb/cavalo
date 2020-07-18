@@ -21,7 +21,8 @@ stream.on("tweet", function (tweet) {
   if (
     tweet.user.screen_name !== "soDigitocavaloo" &&
     tweet.id_str &&
-    tweet.user.screen_name
+    tweet.user.screen_name &&
+    !tweet.text.includes("RT @")
   ) {
     tweetToSend.push({ id_str: tweet.id_str, user: tweet.user.screen_name });
   }
