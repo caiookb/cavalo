@@ -1,3 +1,6 @@
+const express = require("express");
+const app = express();
+
 const Twit = require("twit");
 
 const T = new Twit({
@@ -52,3 +55,9 @@ const replyCavalo = (id, name) => {
     );
   }
 };
+
+app.listen(process.env.PORT || 5000, () => {
+  console.log("conectado");
+});
+
+module.exports = app;
