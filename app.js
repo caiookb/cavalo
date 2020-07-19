@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-
 const Twit = require("twit");
 
 const T = new Twit({
@@ -14,6 +13,9 @@ const T = new Twit({
 const stream = T.stream("statuses/filter", {
   track: "cavalo" || "CAVALO" || "Cavalo",
 });
+
+const randon = () => Math.floor(Math.random() * (20000 - 10000 + 1000)) + 10000;
+let randomMilliseconds = randon();
 
 let tweetToSend = [];
 let sentTweets = [];
@@ -32,16 +34,17 @@ stream.on("tweet", function (tweet) {
 const search = () => {
   console.log("To send: ", tweetToSend);
   console.log("Sent: ", sentTweets);
-  if (tweetToSend[0]) replyCavalo(tweetToSend[0].id_str, tweetToSend[0].user);
+  tweetToSend[0]
+    ? replyCavalo(tweetToSend[0].id_str, tweetToSend[0].user)
+    : startTimeout(search, 15000);
 };
 
 const clearSentsTweetsFromArray = (id_str, user) => {
-  //Clear sent tweet from array
   tweetToSend = tweetToSend.filter((sent) => {
     return id_str !== sent.id_str;
   });
 
-  sentTweets.push({ id_str, user });
+  // sentTweets.push({ id_str, user });
 };
 
 const replyCavalo = (id, name) => {
@@ -50,26 +53,25 @@ const replyCavalo = (id, name) => {
       "statuses/update",
       { in_reply_to_status_id: id, status: "@" + name + " cavalo" },
       (err, data, response) => {
-        if (response.statusCode !== 403) {
+        if (response && response.statusCode === 200) {
+          console.log("Reply enviado para", name);
           clearSentsTweetsFromArray(id, name);
-          console.log("Deu reply para", name);
+          randomMilliseconds = randon();
+          startTimeout(search, randomMilliseconds);
         } else {
-          console.log("Falha no reply do ", name);
-          stopInterval();
-          setTimeout(() => {
-            startInterval(search, 30000);
-          }, 60000);
+          console.log("Falha no reply para", name);
+          tweetToSend = [];
+          startTimeout(search, 400000);
         }
       }
     );
   }
 };
 
-interval = null;
-const startInterval = (func, time) => (interval = setInterval(func, time));
-const stopInterval = () => clearInterval(interval);
-
-if (!interval) startInterval(search, 30000);
+const startTimeout = (func, time) => (interval = setTimeout(func, time));
+// const stopInterval = () => clearInterval(interval);
+console.log("Comecou com ", randomMilliseconds);
+startTimeout(search, randomMilliseconds);
 
 app.listen(process.env.PORT || 5000, () => {
   console.log("conectado");
