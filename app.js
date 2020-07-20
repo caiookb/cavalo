@@ -3,10 +3,10 @@ const app = express();
 const Twit = require("twit");
 
 const T = new Twit({
-  consumer_key: "Yl6pmCnpFIOgF3o8ZuiZe6rxV",
-  consumer_secret: "Lq15H4PJzbExejWvDUhGNOLb6YBibuGcVJ4gwYkJ3uK6tQJwgZ",
-  access_token: "1284591675055235072-HU2ZykueFHwcfTJIemTNVcLj45FTSG",
-  access_token_secret: "y9ifuHQ9fOhvKcNvEXoUKv7b2dj1lQzm4DMWOIMwK4dyk",
+  consumer_key: "your_consumer_key",
+  consumer_secret: "your_consumer_secret",
+  access_token: "your_access_token",
+  access_token_secret: "your_access_token_secret",
   strictSSL: true,
 });
 
